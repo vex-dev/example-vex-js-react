@@ -1,25 +1,53 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { Vex } from '@vex.dev/web-sdk';
+import VideoRoom from './VideoRoom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      connectionStatus: "disconnected",
+      vexInstance: null,
+      conn: null,
+      roomId: window.vex_room_id
+    };
+  }
+
+  componentDidMount() {
+    this.connectToVex();
+  }
+
+  connectToVex() {
+    const vex = new Vex({
+      url: 'wss://app.vex.dev',
+      onDisconnect: () => { this.onVexDisconnect() }
+    });
+    this.setState({ vexInstance: vex, connectionStatus: "connecting..." });
+    vex.connect().then(conn => { this.onVexConnect(conn) });
+  }
+
+  onVexConnect(conn) {
+    this.setState({ connectionStatus: "connected", conn })
+  }
+
+  onVexDisconnect() {
+    this.setState({ connectionStatus: "disconnected" })
+  }
+
+  render() {
+    return (
+      <div className='video-app'>
+        <p>Vex: {this.state.connectionStatus}</p>
+        {this.state.connectionStatus === "connected" &&
+          <VideoRoom roomId={this.state.roomId}
+            vex={this.state.vexInstance}
+            conn={this.state.conn} />
+        }
+      </div>
+    )
+  }
 }
 
 export default App;
