@@ -1,5 +1,6 @@
 import React from 'react';
 import Video from './Video';
+import MyVideo from './MyVideo';
 
 export default class VideoRoom extends React.Component {
   constructor(props) {
@@ -88,6 +89,7 @@ export default class VideoRoom extends React.Component {
           <p>Room {this.props.roomId}</p>
           <p>Join: {this.state.joinStatus}</p>
         </div>
+        <MyVideo room={this.state.vexRoom} stream={this.state.myVideoStream} />
         <div className='spacer' />
         <div className='video-grid'>
           {Object.values(this.state.peersInRoom).map(peerInfo =>
