@@ -21,7 +21,7 @@ class App extends React.Component {
 
   connectToVex() {
     const vex = new Vex({
-      url: 'wss://app.vex.dev',
+      url: window.vex_server_url,
       onDisconnect: () => { this.onVexDisconnect() }
     });
     this.setState({ vexInstance: vex, connectionStatus: "connecting..." });
